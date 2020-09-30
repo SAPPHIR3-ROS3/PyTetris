@@ -6,7 +6,9 @@ from pygame import Surface as Screen
 from pygame.draw import line as DrawLine
 from pygame.draw import rect as DrawRect
 from pygame.font import Font as Font
+from pygame.font import get_fonts as FontsList
 from pygame.font import init as FontInit
+from pygame.font import SysFont as OSFont
 from pygame.time import Clock as Time
 from random import shuffle as Mix
 
@@ -74,14 +76,24 @@ class Game: # game super class
         self.TitleScreen = StartTitle(self.Surface)
         self.SinglePlayer = Play(self.Surface)
 
+        self.TitleScreen.MainLoop()
+
 class StartTitle: #title screen
     def __init__(self, Surface):
         self.Win = Surface
         self.GameIsInMainMenu = True
         pass
 
-    def DrawText(self, Text, TextFont, TextSize, TopLeftX, TopLeftY):
-        pass
+    def DrawText(self, Text, TextFont, TextSize, Color, TopLeftX, TopLeftY): #function to draw text on title screen
+        if TextFont in FontsList(): #check if the font is available in the system font list
+            TSFont = OSFont(TextFont, TextSize) #setting the font from system font list
+
+        else:
+            FontDir = '/Lib/Font/' + TextFont #setting the font directory
+            TSFont = Font(FontDir, TextSize) #setting the font from the game lib
+
+        TextSurface = TSFont.render(Text, True, Color) #rendering the text with antialiasing and color
+        self.WiN.blit(TextSurface, (TopLeftX, TopLeftY)) #rendering the text a given position
 
     def MainLoop(self): #title screen main loop
         while self.GameIsInMainMenu:
@@ -99,11 +111,11 @@ class Play: #main gameplay screen
                 'S':
                     [
                         [
-                            '.....',
+                            '......',
                             '......',
                             '..00..',
                             '.00...',
-                            '.....'
+                            '......'
                         ],
                         [
                             '.....',
@@ -291,4 +303,5 @@ def Exit(): #function to close the game properly
     quit() #closing python
 
 if __name__ == '__main__':
+    print(FontsList())
     PyTetris = Game()
